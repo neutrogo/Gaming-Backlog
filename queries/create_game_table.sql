@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS publisher (
 
 CREATE TABLE IF NOT EXISTS platforms (
     id INTEGER PRIMARY KEY,
-    plaform_name VARCHAR(100),
+    platform_name VARCHAR(100),
     game_id INTEGER
 );
 

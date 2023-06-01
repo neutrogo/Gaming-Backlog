@@ -15,6 +15,22 @@ def create_connection(path):
     
     return connection
 
+def get_game_id(cursor, game_name):
+    """retrieves the given game's ID"""
+    query = "SELECT id FROM games WHERE name=(?)"
+    return cursor.execute(query, (game_name,)).fetchone()[0]
+
+def insert_game(cursor, game_name):
+    """ Inserts a game into the games table"""
+    query = "INSERT INTO games (name) VALUES (?)"
+    cursor.execute(query, (game_name,))
+
+def insert_platform(cursor, game_name, plat):
+    """inserts the chosen platform for a game"""
+    query = "INSERT INTO platforms (platform_name, game_id) VALUES (?,?)"
+    game_id = get_game_id(cursor, game_name)
+    cursor.execute(query, (plat, game_id))
+
 def main():
     """ main method """
     conn = create_connection("./db/games.db")
@@ -24,10 +40,16 @@ def main():
     sql_file = open("./queries/create_game_table.sql")
     query = sql_file.read()
     cursor.executescript(query)
-    cursor.execute("INSERT INTO games (name) VALUES ('Elden Ring')")
+    game_name = input("Which game would you like to add to your backlog?\n")
+    insert_game(cursor, game_name)
+    plat = input("For which Platform?\n")
+    insert_platform(cursor, game_name, plat)
 
     for row in cursor.execute("SELECT * FROM games"):
         print(row)
 
+    for row in cursor.execute("SELECT * FROM platforms"):
+        print(row)
+    
 if __name__ == "__main__":
     main()
