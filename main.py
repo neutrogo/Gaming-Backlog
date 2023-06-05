@@ -27,12 +27,13 @@ def insert_game(cursor, game_name):
 
 def basic_insert_query(cursor, table, game_name, var):
     """Used to insert data into tables"""
-    if "date" in table or "desire" in table:
-        query = f"INSERT INTO {table} (date, game_id) VALUES (?,?)"
-    elif "desire" in table:
-        query = f"INSERT INTO {table} (desire, game_id) VALUES (?,?)"
-    else:
-        query = f"INSERT INTO {table} ({table}_name, game_id) VALUES (?,?)"
+    match table:
+        case "date":
+            query = f"INSERT INTO {table} (date, game_id) VALUES (?,?)"
+        case "desire":
+            query = f"INSERT INTO {table} (desire, game_id) VALUES (?,?)"
+        case _:
+            query = f"INSERT INTO {table} ({table}_name, game_id) VALUES (?,?)"
     game_id = get_game_id(cursor, game_name)
     cursor.execute(query, (var, game_id))
 
