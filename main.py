@@ -25,11 +25,16 @@ def insert_game(cursor, game_name):
     query = "INSERT INTO games (name) VALUES (?)"
     cursor.execute(query, (game_name,))
 
-def insert_platform(cursor, game_name, plat):
-    """inserts the chosen platform for a game"""
-    query = "INSERT INTO platforms (platform_name, game_id) VALUES (?,?)"
+def basic_insert_query(cursor, table, game_name, var):
+    """Used to insert data into tables"""
+    if "date" in table or "desire" in table:
+        query = f"INSERT INTO {table} (date, game_id) VALUES (?,?)"
+    elif "desire" in table:
+        query = f"INSERT INTO {table} (desire, game_id) VALUES (?,?)"
+    else:
+        query = f"INSERT INTO {table} ({table}_name, game_id) VALUES (?,?)"
     game_id = get_game_id(cursor, game_name)
-    cursor.execute(query, (plat, game_id))
+    cursor.execute(query, (var, game_id))
 
 def main():
     """ main method """
@@ -43,12 +48,12 @@ def main():
     game_name = input("Which game would you like to add to your backlog?\n")
     insert_game(cursor, game_name)
     plat = input("For which Platform?\n")
-    insert_platform(cursor, game_name, plat)
+    basic_insert_query(cursor, "platform", game_name, plat)
 
     for row in cursor.execute("SELECT * FROM games"):
         print(row)
 
-    for row in cursor.execute("SELECT * FROM platforms"):
+    for row in cursor.execute("SELECT * FROM platform"):
         print(row)
     
 if __name__ == "__main__":
