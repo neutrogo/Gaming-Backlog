@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 
 
 def check_game_name(game_entry, user_input):
+    """checks if the given game has an entry on metacritic"""
     name = game_entry.contents[1].contents[3].contents[1].contents[5].contents[1].text
     name = name.replace("\n", "")
     name = name.strip()
@@ -11,6 +12,7 @@ def check_game_name(game_entry, user_input):
     return False
 
 def get_available_plats(res_list, user_input, user_agent):
+    """gets all the platforms that the given game is available on"""
     initial_plat = res_list[0].contents[1].contents[3].contents[1].contents[7].contents[1].text
     platforms = [initial_plat]
     game_url = res_list[0].contents[1].contents[3].contents[1].contents[5].contents[1].attrs['href']
