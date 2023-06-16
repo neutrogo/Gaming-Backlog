@@ -28,6 +28,14 @@ def get_available_plats(res_list, user_input, user_agent):
 
     return platforms
 
+def get_user_score(game, plat):
+    """gets the user review score for the given game & platform"""
+    game = game.replace(" ", "-")
+    plat = plat.replace(" ", "-")
+    url = f"https://www.metacritic.com/game/{plat}/{game}"
+    res = soup.find_all("div", class_="metascore_w user")
+    user_score = res[0]
+
 url = "https://www.metacritic.com/search/game/GAMENAME/results"
 user_agent = {'User-agent': 'Mozilla/5.0'}
 
