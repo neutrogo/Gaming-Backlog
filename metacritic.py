@@ -28,13 +28,16 @@ def get_available_plats(res_list, user_input, user_agent):
 
     return platforms
 
-def get_user_score(game, plat):
+def get_user_score(game, plat, user_agent):
     """gets the user review score for the given game & platform"""
-    game = game.replace(" ", "-")
-    plat = plat.replace(" ", "-")
+    game = game.replace(" ", "-").lower()
+    plat = plat.replace(" ", "-").lower()
     url = f"https://www.metacritic.com/game/{plat}/{game}"
-    res = soup.find_all("div", class_="metascore_w user")
-    user_score = res[0]
+    page = requests.get(url, headers=user_agent)
+    soup = BeautifulSoup(page.content, 'html.parser')
+    res = soup.select_one("div.metascore_w.user")
+    user_score = res.text
+    return user_score
 
 url = "https://www.metacritic.com/search/game/GAMENAME/results"
 user_agent = {'User-agent': 'Mozilla/5.0'}
@@ -50,3 +53,4 @@ for game in res:
     res_list.append(game)
 
 plats = get_available_plats(res_list, "Elden Ring", user_agent)
+score = get_user_score("Elden Ring", "Playstation 5", user_agent)
