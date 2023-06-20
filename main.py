@@ -40,9 +40,7 @@ def basic_insert_query(cursor, table, game_name, var):
 def main():
     """ main method """
     conn = create_connection("./db/games.db")
-
     cursor = conn.cursor()
-
     sql_file = open("./queries/create_game_table.sql")
     query = sql_file.read()
     cursor.executescript(query)

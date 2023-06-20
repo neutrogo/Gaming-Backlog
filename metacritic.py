@@ -1,7 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
 
-
 def check_game_name(game_entry, user_input):
     """checks if the given game has an entry on metacritic"""
     name = game_entry.contents[1].contents[3].contents[1].contents[5].contents[1].text
@@ -71,6 +70,5 @@ for game in res:
 plats = get_available_plats(res_list, "Elden Ring", user_agent)
 user = get_user_score("Elden Ring", "Playstation 5", user_agent)
 critic = get_critic_score("Elden Ring", "Playstation 5", user_agent)
-
 print(user)
 print(critic)
