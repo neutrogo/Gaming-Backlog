@@ -1,4 +1,5 @@
 import requests
+from datetime import datetime as DT
 from bs4 import BeautifulSoup
 
 def check_game_name(game_entry, user_input):
@@ -41,6 +42,21 @@ def get_critic_score(game, plat, user_agent):
     critic_score = soup.select_one("div.metascore_w.xlarge").text
     return critic_score
 
+def get_publisher_name(game, plat, user_agent):
+        game, plat = convert_name_to_path(game, plat)
+        soup = get_soup(user_agent, game, plat)
+        pub = soup.find_all("li", class_="summary_detail publisher")[0].contents[3].contents[1].text
+        pub = pub.replace("\n", "")
+        pub = pub.strip()
+        return pub
+
+def get_release_date(game, plat, user_agent):
+        game, plat = convert_name_to_path(game, plat)
+        soup = get_soup(user_agent, game, plat)
+        date = soup.find_all("li", class_="summary_detail release_data")[0].contents[3].text.replace(",", "")
+        date = DT.strptime(date, "%b %d %Y").strftime("%d/%m/%Y")
+        return date
+
 def get_soup(user_agent, game, plat):
     """creates and returns a BeautifulSoup object for the given url"""
     url = f"https://www.metacritic.com/game/{plat}/{game}"
@@ -70,5 +86,9 @@ for game in res:
 plats = get_available_plats(res_list, "Elden Ring", user_agent)
 user = get_user_score("Elden Ring", "Playstation 5", user_agent)
 critic = get_critic_score("Elden Ring", "Playstation 5", user_agent)
+date = get_release_date("Elden Ring", "Playstation 5", user_agent)
+pub = get_publisher_name("Elden Ring", "Playstation 5", user_agent)
 print(user)
 print(critic)
+print(date)
+print(pub)
