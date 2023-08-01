@@ -45,19 +45,30 @@ def get_publisher_name(game, plat, soup):
         return {"publisher": pub}
 
 def get_release_date(game, plat, soup):
-        date = soup.find_all("li", class_="summary_detail release_data")[0].contents[3].text.replace(",", "")
-        date = DT.strptime(date, "%b %d %Y").strftime("%d/%m/%Y")
-        return {"date": date}
+    date = soup.find_all("li", class_="summary_detail release_data")[0].contents[3].text.replace(",", "")
+    date = DT.strptime(date, "%b %d %Y").strftime("%d/%m/%Y")
+    return {"date": date}
 
 def get_game_details(game, plat, user_agent):
-        details = {}
-        game, plat = convert_name_to_path(game, plat)
-        soup = get_soup(user_agent, game, plat)
-        details.update(get_user_score(game, plat, soup))
-        details.update(get_critic_score(game, plat, soup))
-        details.update(get_publisher_name(game, plat, soup))
-        details.update(get_release_date(game, plat, soup))
-        return details
+    details = {}
+    game, plat = convert_name_to_path(game, plat)
+    soup = get_soup(user_agent, game, plat)
+    details.update(get_user_score(game, plat, soup))
+    details.update(get_critic_score(game, plat, soup))
+    details.update(get_publisher_name(game, plat, soup))
+    details.update(get_release_date(game, plat, soup))
+    details.update(get_game_developer(game, plat, soup))
+    details.update(get_game_genre(game, plat, soup))
+    return details
+
+def get_game_developer(game, plat, soup):
+    dev = soup.find_all("li", class_="summary_detail developer")[0].contents[3].contents[1].text
+    return {"dev": dev}
+
+def get_game_genre(game, plat, soup):
+    #currently only gets the first genre, potentially update
+    genre = soup.find_all("li", class_="summary_detail product_genre")[0].contents[3].text
+    return {"genre": genre}
 
 def get_soup(user_agent, game, plat):
     """creates and returns a BeautifulSoup object for the given url"""
