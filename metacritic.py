@@ -39,17 +39,30 @@ def get_critic_score(game, plat, soup):
     return {"critic_score": critic_score}
 
 def get_publisher_name(game, plat, soup):
+        """gets the publisher for the given game & platform"""
         pub = soup.find_all("li", class_="summary_detail publisher")[0].contents[3].contents[1].text
         pub = pub.replace("\n", "")
         pub = pub.strip()
         return {"publisher": pub}
 
 def get_release_date(game, plat, soup):
+    """gets the release date for the given game & platform"""
     date = soup.find_all("li", class_="summary_detail release_data")[0].contents[3].text.replace(",", "")
     date = DT.strptime(date, "%b %d %Y").strftime("%d/%m/%Y")
     return {"date": date}
 
+def get_game_developer(game, plat, soup):
+    """gets the game developer for the given game & platform"""
+    dev = soup.find_all("li", class_="summary_detail developer")[0].contents[3].contents[1].text
+    return {"dev": dev}
+
+def get_game_genre(game, plat, soup):
+    #currently only gets the first genre, potentially update
+    genre = soup.find_all("li", class_="summary_detail product_genre")[0].contents[3].text
+    return {"genre": genre}
+
 def get_game_details(game, plat, user_agent):
+    """gets all necessary game details from metacritic and returns them as a dictionary"""
     details = {}
     game, plat = convert_name_to_path(game, plat)
     soup = get_soup(user_agent, game, plat)
@@ -60,15 +73,6 @@ def get_game_details(game, plat, user_agent):
     details.update(get_game_developer(game, plat, soup))
     details.update(get_game_genre(game, plat, soup))
     return details
-
-def get_game_developer(game, plat, soup):
-    dev = soup.find_all("li", class_="summary_detail developer")[0].contents[3].contents[1].text
-    return {"dev": dev}
-
-def get_game_genre(game, plat, soup):
-    #currently only gets the first genre, potentially update
-    genre = soup.find_all("li", class_="summary_detail product_genre")[0].contents[3].text
-    return {"genre": genre}
 
 def get_soup(user_agent, game, plat):
     """creates and returns a BeautifulSoup object for the given url"""
